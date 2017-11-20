@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <import resource="routes/pull-file-routes.xml" />
+    <import resource="rest-context.xml" />
+    <camel:camelContext id="pull-files"
+        managementNamePattern="pull-files" useMDCLogging="true"
+        trace="${camel.trace:false}" handleFault="true" messageHistory="true"
+        errorHandlerRef="default-error-handler" autoStartup="${camel.autostart:false}"
+        streamCache="true">
+        <camel:errorHandler id="default-error-handler"
+            type="DefaultErrorHandler" useOriginalMessage="true"
+            redeliveryPolicyRef="no-retry-policy" />
+        <camel:routeContextRef ref="pull-file-routes" />      
+        <!-- Include rest dsl routes from external files -->  
+        <camel:restContextRef ref="pull-rest-context" />
+        <camel:redeliveryPolicyProfile id="no-retry-policy"
+            maximumRedeliveries="0" />
+         <!-- Configure the Rest DSL to use a Rest implementation. This defaults to camel-servlet. -->
+        <camel:restConfiguration component="{{rest.implementation.component}}" 
+          contextPath="{{rest.service.context.path}}" port="{{rest.service.port}}"
+          bindingMode="json">
+          <camel:dataFormatProperty key="prettyPrint" value="true"/>
+           <camel:dataFormatProperty key="json.in.disableFeatures" value="FAIL_ON_EMPTY_BEANS"/>
+        </camel:restConfiguration>
+    </camel:camelContext>
+</beans>

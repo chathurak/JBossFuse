@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <bean id="wits-data-source" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin:@${wits.database.trading.host}:${wits.database.trading.port}:${wits.database.trading.db}" />
+        <property name="username" value="${wits.database.trading.user}" />
+        <property name="password" value="${wits.database.trading.password}" />
+    </bean>
+
+
+
+</beans>

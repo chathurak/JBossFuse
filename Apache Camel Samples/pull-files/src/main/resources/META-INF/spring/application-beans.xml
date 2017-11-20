@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="sql" class="org.apache.camel.component.sql.SqlComponent">
+        <property name="dataSource" ref="wits-data-source"/>
+    </bean>
+    <bean id="fileProcessor" class="com.sam.fuse.camel.pull.processors.FileUtilProcessor">        
+    </bean>      
+    
+    <bean id="multipartFileDownloadProcessor" class="com.sam.fuse.camel.pull.processors.MultipartFileDownloadProcessor">
+    <constructor-arg name="fileDownloadDirectory" value="${file.download.directory}"/>
+    <constructor-arg name="mediaType" value="multipart/form-data"/>    
+    </bean>
+</beans>

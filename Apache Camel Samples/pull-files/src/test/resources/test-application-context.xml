@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Bridge spring property placeholder with Camel -->
+    <!-- You must NOT use the <context:property-placeholder at the same time, only this bridge bean -->
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:test-general.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--<bean id="testException" class="java.lang.Exception">-->
+        <!--<constructor-arg index="0" value="This is synthetic exception"/>-->
+    <!--</bean>-->
+
+    <import resource="test-datasource-context.xml"/>
+    <import resource="/META-INF/spring/application-beans.xml"/>
+    <import resource="/META-INF/spring/camel-context.xml"/>
+
+</beans>

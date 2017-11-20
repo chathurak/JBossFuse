@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+ 
+    <camel:restContext id="pull-rest-context">
+    <camel:rest path="/download">
+       <camel:get uri="/{fileName}"                              
+                id="pull-rest-dsl-route">
+                <camel:description>This service generates data based on parameters</camel:description>                        
+                <camel:responseMessage
+                    message="Order for the applied parameters" code="200" />
+                <camel:to uri="direct:process-pull-files" />
+            </camel:get>
+        <camel:get uri="/bye">
+        <camel:to uri="direct:bye" />
+      </camel:get>          
+    </camel:rest>
+    
+    <camel:rest path="/test">
+    <camel:post uri="/wits/push/{participantId}" consumes="multipart/form-data" bindingMode="off">
+        <camel:to uri="direct:recieve-files" />
+      </camel:post>
+    </camel:rest>
+    
+  </camel:restContext>
+</beans>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+   <camel:routeContext id="pull-file-routes">
+        <camel:route id="pull-file-route" group="pull-file-route-group">
+            <camel:from id="pull-entrypoint" uri="direct:process-pull-files"/>
+            <!-- TODO log all the params in debug for com.sam.fuse.camel.pull  -->
+            <camel:log message="header.filename  ${header.filename}" loggingLevel="INFO" logName="com.sam.fuse.camel.pull" />         
+            <camel:to id="pull-response-route" uri="direct:get-file"/>              
+            <camel:log message="finished pull file" loggingLevel="INFO" logName="com.sam.fuse.camel.pull"/>
+        </camel:route>
+                
+         <camel:route id="read-file-route">
+            <camel:from id= "read-file" uri="direct:get-file" />
+            <camel:log message="*** header.fileName   ${header.fileName}" loggingLevel="INFO" logName="com.sam.fuse.camel.pull" />  
+            <camel:setHeader headerName="FILE_LOCATION">
+                        <camel:simple>${base.file.location}/</camel:simple>
+            </camel:setHeader> 
+            <camel:process ref="fileProcessor"/>                        
+        </camel:route>  
+      <camel:route group="recieve-files-routes" id="recieve-push-files">
+      <camel:from uri="direct:recieve-files"/>
+      <camel:log message="************* recieve-files-routes recieve request for participant  ${header.participantId}" logName="com.sam.fuse.camel.pull" loggingLevel="INFO"/>                   
+      <camel:setHeader headerName="COMPANY_CODE">
+           <camel:simple>${header.participantId}/</camel:simple>
+      </camel:setHeader> 
+      <camel:process ref="multipartFileDownloadProcessor"/>  
+    </camel:route>  
+                 
+    </camel:routeContext>
+</beans>
